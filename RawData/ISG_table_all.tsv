@@ -1,0 +1,468 @@
+SYMBOL	ENTREZID	gene	GENENAME
+ACSL4	2182	ENSG00000068366	acyl-CoA synthetase long chain family member 4
+ADAR	103	ENSG00000160710	adenosine deaminase RNA specific
+AGT	183	ENSG00000135744	angiotensinogen
+AGXT	189	ENSG00000172482	alanine--glyoxylate and serine--pyruvate aminotransferase
+AIDA	64853	ENSG00000186063	axin interactor, dorsalization associated
+AKAP8	10270	ENSG00000105127	A-kinase anchoring protein 8
+AKT3	10000	ENSG00000117020	AKT serine/threonine kinase 3
+AKT3	10000	ENSG00000275199	AKT serine/threonine kinase 3
+ANKFY1	51479	ENSG00000185722	ankyrin repeat and FYVE domain containing 1
+ANKS1B	56899	ENSG00000185046	ankyrin repeat and sterile alpha motif domain containing 1B
+ANP32B	10541	ENSG00000136938	acidic nuclear phosphoprotein 32 family member B
+APOBEC1	339	ENSG00000111701	apolipoprotein B mRNA editing enzyme catalytic subunit 1
+APOD	347	ENSG00000189058	apolipoprotein D
+APOL1	8542	ENSG00000100342	apolipoprotein L1
+APOL2	23780	ENSG00000128335	apolipoprotein L2
+APOL6	80830	ENSG00000221963	apolipoprotein L6
+ASCC3	10973	ENSG00000112249	activating signal cointegrator 1 complex subunit 3
+ATCAY	85300	ENSG00000167654	ATCAY kinesin light chain interacting caytaxin
+ATF3	467	ENSG00000162772	activating transcription factor 3
+ATL1	51062	ENSG00000198513	atlastin GTPase 1
+ATL3	25923	ENSG00000184743	atlastin GTPase 3
+ATP6V0A1	535	ENSG00000033627	ATPase H+ transporting V0 subunit a1
+AURKB	9212	ENSG00000178999	aurora kinase B
+B2M	567	ENSG00000166710	beta-2-microglobulin
+B2M	567	ENSG00000273686	beta-2-microglobulin
+BATF2	116071	ENSG00000168062	basic leucine zipper ATF-like transcription factor 2
+BIRC3	330	ENSG00000023445	baculoviral IAP repeat containing 3
+BLMH	642	ENSG00000108578	bleomycin hydrolase
+BST2	684	ENSG00000130303	bone marrow stromal cell antigen 2
+BTC	685	ENSG00000174808	betacellulin
+C1S	716	ENSG00000182326	complement C1s
+CA13	377677	ENSG00000185015	carbonic anhydrase 13
+CASP1	834	ENSG00000137752	caspase 1
+CASP12	100506742	ENSG00000204403	caspase 12 (gene/pseudogene)
+CCDC50	152137	ENSG00000152492	coiled-coil domain containing 50
+CCL4	6351	ENSG00000275302	C-C motif chemokine ligand 4
+CCL4	6351	ENSG00000275824	C-C motif chemokine ligand 4
+CCL4	6351	ENSG00000277943	C-C motif chemokine ligand 4
+CCL5	6352	ENSG00000271503	C-C motif chemokine ligand 5
+CCL5	6352	ENSG00000274233	C-C motif chemokine ligand 5
+CCNG1	900	ENSG00000113328	cyclin G1
+CD38	952	ENSG00000004468	CD38 molecule
+CD47	961	ENSG00000196776	CD47 molecule
+CDKN1A	1026	ENSG00000124762	cyclin dependent kinase inhibitor 1A
+CEACAM1	634	ENSG00000079385	CEA cell adhesion molecule 1
+CEACAM3	1084	ENSG00000170956	CEA cell adhesion molecule 3
+CHAC1	79094	ENSG00000128965	ChaC glutathione specific gamma-glutamylcyclotransferase 1
+CTSS	1520	ENSG00000163131	cathepsin S
+CXCL1	2919	ENSG00000163739	C-X-C motif chemokine ligand 1
+CXCL10	3627	ENSG00000169245	C-X-C motif chemokine ligand 10
+CXCL11	6373	ENSG00000169248	C-X-C motif chemokine ligand 11
+CXCR4	7852	ENSG00000121966	C-X-C motif chemokine receptor 4
+CYP26A1	1592	ENSG00000095596	cytochrome P450 family 26 subfamily A member 1
+DAXX	1616	ENSG00000204209	death domain associated protein
+DAXX	1616	ENSG00000229396	death domain associated protein
+DAXX	1616	ENSG00000231617	death domain associated protein
+DAXX	1616	ENSG00000206279	death domain associated protein
+DAXX	1616	ENSG00000206206	death domain associated protein
+DAXX	1616	ENSG00000227046	death domain associated protein
+DDX24	57062	ENSG00000089737	DEAD-box helicase 24
+DDX24	57062	ENSG00000273761	DEAD-box helicase 24
+DDX3X	1654	ENSG00000215301	DEAD-box helicase 3 X-linked
+DDX58	23586	ENSG00000107201	DExD/H-box helicase 58
+DEFA1	1667	ENSG00000206047	defensin alpha 1
+DEFA1	1667	ENSG00000284983	defensin alpha 1
+DEFA3	1668	ENSG00000239839	defensin alpha 3
+DEFA3	1668	ENSG00000284835	defensin alpha 3
+DHX58	79132	ENSG00000108771	DExH-box helicase 58
+DOCK4	9732	ENSG00000128512	dedicator of cytokinesis 4
+DTX3L	151636	ENSG00000163840	deltex E3 ubiquitin ligase 3L
+EIF2AK2	5610	ENSG00000055332	eukaryotic translation initiation factor 2 alpha kinase 2
+EPC1	80314	ENSG00000120616	enhancer of polycomb homolog 1
+EXOC4	60412	ENSG00000131558	exocyst complex component 4
+FAM3C	10447	ENSG00000196937	family with sequence similarity 3 member C
+FCGR1A	2209	ENSG00000150337	Fc fragment of IgG receptor Ia
+FCGR1B	2210	ENSG00000198019	Fc fragment of IgG receptor Ib
+FTL	2512	ENSG00000087086	ferritin light chain
+GBP1	2633	ENSG00000117228	guanylate binding protein 1
+GBP2	2634	ENSG00000162645	guanylate binding protein 2
+GBP3	2635	ENSG00000117226	guanylate binding protein 3
+GBP4	115361	ENSG00000162654	guanylate binding protein 4
+GBP5	115362	ENSG00000154451	guanylate binding protein 5
+GBP7	388646	ENSG00000213512	guanylate binding protein 7
+GCH1	2643	ENSG00000131979	GTP cyclohydrolase 1
+GLI3	2737	ENSG00000106571	GLI family zinc finger 3
+GMPR	2766	ENSG00000137198	guanosine monophosphate reductase
+GNB4	59345	ENSG00000114450	G protein subunit beta 4
+GOSR1	9527	ENSG00000108587	golgi SNAP receptor complex member 1
+GTPBP2	54676	ENSG00000172432	GTP binding protein 2
+HCN3	57657	ENSG00000143630	hyperpolarization activated cyclic nucleotide gated potassium channel 3
+HCN3	57657	ENSG00000263324	hyperpolarization activated cyclic nucleotide gated potassium channel 3
+HCP5	10866	ENSG00000206337	HLA complex P5
+HCP5	10866	ENSG00000230389	HLA complex P5
+HCP5	10866	ENSG00000227429	HLA complex P5
+HCP5	10866	ENSG00000237105	HLA complex P5
+HERC5	51191	ENSG00000138646	HECT and RLD domain containing E3 ubiquitin protein ligase 5
+HERC6	55008	ENSG00000138642	HECT and RLD domain containing E3 ubiquitin protein ligase family member 6
+HLA-A	3105	ENSG00000206503	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000223980	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000231834	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000229215	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000206505	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000224320	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000235657	major histocompatibility complex, class I, A
+HLA-A	3105	ENSG00000227715	major histocompatibility complex, class I, A
+HLA-B	3106	ENSG00000234745	major histocompatibility complex, class I, B
+HLA-B	3106	ENSG00000228964	major histocompatibility complex, class I, B
+HLA-B	3106	ENSG00000223532	major histocompatibility complex, class I, B
+HLA-B	3106	ENSG00000232126	major histocompatibility complex, class I, B
+HLA-B	3106	ENSG00000206450	major histocompatibility complex, class I, B
+HLA-B	3106	ENSG00000224608	major histocompatibility complex, class I, B
+HLA-DRA	3122	ENSG00000204287	major histocompatibility complex, class II, DR alpha
+HLA-DRA	3122	ENSG00000230726	major histocompatibility complex, class II, DR alpha
+HLA-DRA	3122	ENSG00000206308	major histocompatibility complex, class II, DR alpha
+HLA-DRA	3122	ENSG00000227993	major histocompatibility complex, class II, DR alpha
+HLA-DRA	3122	ENSG00000234794	major histocompatibility complex, class II, DR alpha
+HLA-DRA	3122	ENSG00000228987	major histocompatibility complex, class II, DR alpha
+HLA-DRA	3122	ENSG00000226260	major histocompatibility complex, class II, DR alpha
+HLA-F	3134	ENSG00000204642	major histocompatibility complex, class I, F
+HLA-F	3134	ENSG00000237508	major histocompatibility complex, class I, F
+HLA-F	3134	ENSG00000206509	major histocompatibility complex, class I, F
+HLA-F	3134	ENSG00000229698	major histocompatibility complex, class I, F
+HLA-F	3134	ENSG00000137403	major histocompatibility complex, class I, F
+HLA-F	3134	ENSG00000235220	major histocompatibility complex, class I, F
+HLA-F	3134	ENSG00000234487	major histocompatibility complex, class I, F
+HSD17B14	51171	ENSG00000087076	hydroxysteroid 17-beta dehydrogenase 14
+HSH2D	84941	ENSG00000196684	hematopoietic SH2 domain containing
+HTR1D	3352	ENSG00000179546	5-hydroxytryptamine receptor 1D
+ICAM1	3383	ENSG00000090339	intercellular adhesion molecule 1
+ICAM3	3385	ENSG00000076662	intercellular adhesion molecule 3
+IFI16	3428	ENSG00000163565	interferon gamma inducible protein 16
+IFI27	3429	ENSG00000165949	interferon alpha inducible protein 27
+IFI27	3429	ENSG00000275214	interferon alpha inducible protein 27
+IFI35	3430	ENSG00000068079	interferon induced protein 35
+IFI44	10561	ENSG00000137965	interferon induced protein 44
+IFI44L	10964	ENSG00000137959	interferon induced protein 44 like
+IFI6	2537	ENSG00000126709	interferon alpha inducible protein 6
+IFIH1	64135	ENSG00000115267	interferon induced with helicase C domain 1
+IFIT2	3433	ENSG00000119922	interferon induced protein with tetratricopeptide repeats 2
+IFIT3	3437	ENSG00000119917	interferon induced protein with tetratricopeptide repeats 3
+IFIT5	24138	ENSG00000152778	interferon induced protein with tetratricopeptide repeats 5
+IFITM1	8519	ENSG00000185885	interferon induced transmembrane protein 1
+IFITM2	10581	ENSG00000185201	interferon induced transmembrane protein 2
+IFNGR1	3459	ENSG00000027697	interferon gamma receptor 1
+IFRD1	3475	ENSG00000006652	interferon related developmental regulator 1
+IL13RA1	3597	ENSG00000131724	interleukin 13 receptor subunit alpha 1
+IL18	3606	ENSG00000150782	interleukin 18
+IL1RN	3557	ENSG00000136689	interleukin 1 receptor antagonist
+IL4I1	259307	ENSG00000104951	interleukin 4 induced 1
+IL6	3569	ENSG00000136244	interleukin 6
+IRF1	3659	ENSG00000125347	interferon regulatory factor 1
+IRF3	3661	ENSG00000126456	interferon regulatory factor 3
+IRF7	3665	ENSG00000185507	interferon regulatory factor 7
+IRF7	3665	ENSG00000276561	interferon regulatory factor 7
+IRF8	3394	ENSG00000140968	interferon regulatory factor 8
+IRF9	10379	ENSG00000213928	interferon regulatory factor 9
+IRF9	10379	ENSG00000285048	interferon regulatory factor 9
+ISG15	9636	ENSG00000187608	ISG15 ubiquitin like modifier
+ISG20	3669	ENSG00000172183	interferon stimulated exonuclease gene 20
+JAK2	3717	ENSG00000096968	Janus kinase 2
+KBTBD8	84541	ENSG00000163376	kelch repeat and BTB domain containing 8
+KLK10	5655	ENSG00000129451	kallikrein related peptidase 10
+KLK8	11202	ENSG00000129455	kallikrein related peptidase 8
+KLK9	284366	ENSG00000213022	kallikrein related peptidase 9
+KRT1	3848	ENSG00000167768	keratin 1
+LAMP3	27074	ENSG00000078081	lysosomal associated membrane protein 3
+LAP3	51056	ENSG00000002549	leucine aminopeptidase 3
+LGALS3BP	3959	ENSG00000108679	galectin 3 binding protein
+LGALS9	3965	ENSG00000168961	galectin 9
+LMO2	4005	ENSG00000135363	LIM domain only 2
+LPGAT1	9926	ENSG00000123684	lysophosphatidylglycerol acyltransferase 1
+LSS	4047	ENSG00000160285	lanosterol synthase
+LSS	4047	ENSG00000281289	lanosterol synthase
+LY6E	4061	ENSG00000160932	lymphocyte antigen 6 family member E
+LY6E	4061	ENSG00000278032	lymphocyte antigen 6 family member E
+LYPLA1	10434	ENSG00000120992	lysophospholipase 1
+MAFK	7975	ENSG00000198517	MAF bZIP transcription factor K
+MAP3K8	1326	ENSG00000107968	mitogen-activated protein kinase kinase kinase 8
+MICA	100507436	ENSG00000204520	MHC class I polypeptide-related sequence A
+MICA	100507436	ENSG00000231225	MHC class I polypeptide-related sequence A
+MICA	100507436	ENSG00000233051	MHC class I polypeptide-related sequence A
+MICA	100507436	ENSG00000183214	MHC class I polypeptide-related sequence A
+MICA	100507436	ENSG00000235233	MHC class I polypeptide-related sequence A
+MOV10	4343	ENSG00000155363	Mov10 RISC complex RNA helicase
+MSMB	4477	ENSG00000263639	microseminoprotein beta
+MX1	4599	ENSG00000157601	MX dynamin like GTPase 1
+MX2	4600	ENSG00000183486	MX dynamin like GTPase 2
+MYD88	4615	ENSG00000172936	MYD88 innate immune signal transduction adaptor
+MYO1C	4641	ENSG00000197879	myosin IC
+NAMPT	10135	ENSG00000105835	nicotinamide phosphoribosyltransferase
+NFIL3	4783	ENSG00000165030	nuclear factor, interleukin 3 regulated
+NFS1	9054	ENSG00000244005	NFS1 cysteine desulfurase
+NLRC5	84166	ENSG00000140853	NLR family CARD domain containing 5
+NMI	9111	ENSG00000123609	N-myc and STAT interactor
+NPC2	10577	ENSG00000119655	NPC intracellular cholesterol transporter 2
+NPM3	10360	ENSG00000107833	nucleophosmin/nucleoplasmin 3
+NUB1	51667	ENSG00000013374	negative regulator of ubiquitin like proteins 1
+OAS1	4938	ENSG00000089127	2'-5'-oligoadenylate synthetase 1
+OAS2	4939	ENSG00000111335	2'-5'-oligoadenylate synthetase 2
+OASL	8638	ENSG00000135114	2'-5'-oligoadenylate synthetase like
+OGFR	11054	ENSG00000060491	opioid growth factor receptor
+OSBPL9	114883	ENSG00000117859	oxysterol binding protein like 9
+PAK3	5063	ENSG00000077264	p21 (RAC1) activated kinase 3
+PARP12	64761	ENSG00000059378	poly(ADP-ribose) polymerase family member 12
+PARP9	83666	ENSG00000138496	poly(ADP-ribose) polymerase family member 9
+PELI1	57162	ENSG00000197329	pellino E3 ubiquitin protein ligase 1
+PKLR	5313	ENSG00000143627	pyruvate kinase L/R
+PKLR	5313	ENSG00000262785	pyruvate kinase L/R
+PLA1A	51365	ENSG00000144837	phospholipase A1 member A
+PLSCR1	5359	ENSG00000188313	phospholipid scramblase 1
+PLSCR2	57047	ENSG00000163746	phospholipid scramblase 2
+PML	5371	ENSG00000140464	promyelocytic leukemia
+PMP22	5376	ENSG00000109099	peripheral myelin protein 22
+PNPT1	87178	ENSG00000138035	polyribonucleotide nucleotidyltransferase 1
+PPM1K	152926	ENSG00000163644	protein phosphatase, Mg2+/Mn2+ dependent 1K
+PPP2R2A	5520	ENSG00000221914	protein phosphatase 2 regulatory subunit Balpha
+PSMB10	5699	ENSG00000205220	proteasome 20S subunit beta 10
+PSMB8	5696	ENSG00000204264	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000230034	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000226201	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000206298	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000235715	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000231631	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000236443	proteasome 20S subunit beta 8
+PSMB8	5696	ENSG00000230669	proteasome 20S subunit beta 8
+PSMB9	5698	ENSG00000240065	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000240118	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000240508	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000243594	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000243067	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000243958	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000239836	proteasome 20S subunit beta 9
+PSMB9	5698	ENSG00000242711	proteasome 20S subunit beta 9
+PSME2	5721	ENSG00000100911	proteasome activator subunit 2
+PSME2	5721	ENSG00000284889	proteasome activator subunit 2
+REC8	9985	ENSG00000100918	REC8 meiotic recombination protein
+REC8	9985	ENSG00000285007	REC8 meiotic recombination protein
+REEP3	221035	ENSG00000165476	receptor accessory protein 3
+RGS22	26166	ENSG00000132554	regulator of G protein signaling 22
+RNASE6	6039	ENSG00000169413	ribonuclease A family member k6
+RPL41	6171	ENSG00000229117	ribosomal protein L41
+RSAD2	91543	ENSG00000134321	radical S-adenosyl methionine domain containing 2
+RTP4	64108	ENSG00000136514	receptor transporter protein 4
+SAMD9	54809	ENSG00000205413	sterile alpha motif domain containing 9
+SAMD9L	219285	ENSG00000177409	sterile alpha motif domain containing 9 like
+SAMHD1	25939	ENSG00000101347	SAM and HD domain containing deoxynucleoside triphosphate triphosphohydrolase 1
+SCGB2A1	4246	ENSG00000124939	secretoglobin family 2A member 1
+SEC14L2	23541	ENSG00000100003	SEC14 like lipid binding 2
+SEC14L3	266629	ENSG00000100012	SEC14 like lipid binding 3
+SEC62	7095	ENSG00000008952	SEC62 homolog, preprotein translocation factor
+SEMA6D	80031	ENSG00000137872	semaphorin 6D
+SERPINB7	8710	ENSG00000166396	serpin family B member 7
+SERPING1	710	ENSG00000149131	serpin family G member 1
+SLAMF7	57823	ENSG00000026751	SLAM family member 7
+SLC15A3	51296	ENSG00000110446	solute carrier family 15 member 3
+SLC16A4	9122	ENSG00000168679	solute carrier family 16 member 4
+SLC1A3	6507	ENSG00000079215	solute carrier family 1 member 3
+SLC25A28	81894	ENSG00000155287	solute carrier family 25 member 28
+SLC45A2	51151	ENSG00000164175	solute carrier family 45 member 2
+SLC45A2	51151	ENSG00000281919	solute carrier family 45 member 2
+SNX5	27131	ENSG00000089006	sorting nexin 5
+SOCS1	8651	ENSG00000185338	suppressor of cytokine signaling 1
+SP100	6672	ENSG00000067066	SP100 nuclear antigen
+SP110	3431	ENSG00000135899	SP110 nuclear body protein
+SP140	11262	ENSG00000079263	SP140 nuclear body protein
+SPTBN4	57731	ENSG00000160460	spectrin beta, non-erythrocytic 4
+STAT1	6772	ENSG00000115415	signal transducer and activator of transcription 1
+STAT2	6773	ENSG00000170581	signal transducer and activator of transcription 2
+STAT3	6774	ENSG00000168610	signal transducer and activator of transcription 3
+SYNJ1	8867	ENSG00000159082	synaptojanin 1
+TAP2	6891	ENSG00000204267	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000223481	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000237599	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000206299	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000228582	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000232326	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000206235	transporter 2, ATP binding cassette subfamily B member
+TAP2	6891	ENSG00000225967	transporter 2, ATP binding cassette subfamily B member
+TAPBP	6892	ENSG00000231925	TAP binding protein
+TAPBP	6892	ENSG00000206208	TAP binding protein
+TAPBP	6892	ENSG00000206281	TAP binding protein
+TAPBP	6892	ENSG00000236490	TAP binding protein
+TAPBP	6892	ENSG00000112493	TAP binding protein
+TCIRG1	10312	ENSG00000110719	T cell immune regulator 1, ATPase H+ transporting V0 subunit a3
+TDRD7	23424	ENSG00000196116	tudor domain containing 7
+TGM2	7052	ENSG00000198959	transglutaminase 2
+TLR3	7098	ENSG00000164342	toll like receptor 3
+TMEM140	55281	ENSG00000146859	transmembrane protein 140
+TMEM184A	202915	ENSG00000164855	transmembrane protein 184A
+TMOD3	29766	ENSG00000138594	tropomodulin 3
+TNFAIP6	7130	ENSG00000123610	TNF alpha induced protein 6
+TNFSF10	8743	ENSG00000121858	TNF superfamily member 10
+TNFSF13B	10673	ENSG00000102524	TNF superfamily member 13b
+TOR3A	64222	ENSG00000186283	torsin family 3 member A
+TRIM14	9830	ENSG00000106785	tripartite motif containing 14
+TRIM21	6737	ENSG00000132109	tripartite motif containing 21
+TRIM22	10346	ENSG00000132274	tripartite motif containing 22
+TRIM25	7706	ENSG00000121060	tripartite motif containing 25
+TRIM34	53840	ENSG00000258659	tripartite motif containing 34
+TRIM6	117854	ENSG00000121236	tripartite motif containing 6
+TRIM69	140691	ENSG00000185880	tripartite motif containing 69
+TRIM69	140691	ENSG00000278211	tripartite motif containing 69
+TTC39B	158219	ENSG00000155158	tetratricopeptide repeat domain 39B
+UBA7	7318	ENSG00000182179	ubiquitin like modifier activating enzyme 7
+UBD	10537	ENSG00000213886	ubiquitin D
+UBD	10537	ENSG00000226898	ubiquitin D
+UBD	10537	ENSG00000206513	ubiquitin D
+UBD	10537	ENSG00000231968	ubiquitin D
+UBD	10537	ENSG00000228913	ubiquitin D
+UBD	10537	ENSG00000206468	ubiquitin D
+UBD	10537	ENSG00000224654	ubiquitin D
+UBE2L6	9246	ENSG00000156587	ubiquitin conjugating enzyme E2 L6
+UGT1A1	54658	ENSG00000241635	UDP glucuronosyltransferase family 1 member A1
+UGT1A10	54575	ENSG00000242515	UDP glucuronosyltransferase family 1 member A10
+UGT1A3	54659	ENSG00000243135	UDP glucuronosyltransferase family 1 member A3
+UGT1A4	54657	ENSG00000244474	UDP glucuronosyltransferase family 1 member A4
+UGT1A5	54579	ENSG00000240224	UDP glucuronosyltransferase family 1 member A5
+UGT1A6	54578	ENSG00000167165	UDP glucuronosyltransferase family 1 member A6
+UGT1A7	54577	ENSG00000244122	UDP glucuronosyltransferase family 1 member A7
+UGT1A8	54576	ENSG00000242366	UDP glucuronosyltransferase family 1 member A8
+UGT1A9	54600	ENSG00000241119	UDP glucuronosyltransferase family 1 member A9
+USP18	11274	ENSG00000184979	ubiquitin specific peptidase 18
+WDFY1	57590	ENSG00000085449	WD repeat and FYVE domain containing 1
+WIPF1	7456	ENSG00000115935	WAS/WASL interacting protein family member 1
+XDH	7498	ENSG00000158125	xanthine dehydrogenase
+ZC3HAV1	56829	ENSG00000105939	zinc finger CCCH-type containing, antiviral 1
+ZNF148	7707	ENSG00000163848	zinc finger protein 148
+ZNF384	171017	ENSG00000126746	zinc finger protein 384
+ZNFX1	57169	ENSG00000124201	zinc finger NFX1-type containing 1
+ADGRG1	9289	ENSG00000205336	adhesion G protein-coupled receptor G1
+AHNAK	79026	ENSG00000124942	AHNAK nucleoprotein
+AHNAK2	113146	ENSG00000185567	AHNAK nucleoprotein 2
+ANXA1	301	ENSG00000135046	annexin A1
+APOL3	80833	ENSG00000128284	apolipoprotein L3
+APOL4	80832	ENSG00000100336	apolipoprotein L4
+APOL5	80831	ENSG00000128313	apolipoprotein L5
+APOL5	80831	ENSG00000277390	apolipoprotein L5
+ASCL1	429	ENSG00000139352	achaete-scute family bHLH transcription factor 1
+ASTE1	28990	ENSG00000034533	asteroid homolog 1
+BET1L	51272	ENSG00000177951	Bet1 golgi vesicular membrane trafficking protein like
+CASP4	837	ENSG00000196954	caspase 4
+CASP5	838	ENSG00000137757	caspase 5
+CASP7	840	ENSG00000165806	caspase 7
+CCL19	6363	ENSG00000172724	C-C motif chemokine ligand 19
+CD40	958	ENSG00000101017	CD40 molecule
+CMPK2	129607	ENSG00000134326	cytidine/uridine monophosphate kinase 2
+CSTA	1475	ENSG00000121552	cystatin A
+CTLA4	1493	ENSG00000163599	cytotoxic T-lymphocyte associated protein 4
+CYLD	1540	ENSG00000083799	CYLD lysine 63 deubiquitinase
+ELOF1	84337	ENSG00000130165	elongation factor 1 homolog
+EPSTI1	94240	ENSG00000133106	epithelial stromal interaction 1
+FABP4	2167	ENSG00000170323	fatty acid binding protein 4
+FABP5	2171	ENSG00000164687	fatty acid binding protein 5
+FABP9	646480	ENSG00000205186	fatty acid binding protein 9
+PMP2	5375	ENSG00000147588	peripheral myelin protein 2
+FAS	355	ENSG00000026103	Fas cell surface death receptor
+FPR1	2357	ENSG00000171051	formyl peptide receptor 1
+FPR2	2358	ENSG00000171049	formyl peptide receptor 2
+FPR3	2359	ENSG00000187474	formyl peptide receptor 3
+GPR32	2854	ENSG00000142511	G protein-coupled receptor 32
+FUT9	10690	ENSG00000172461	fucosyltransferase 9
+GGT1	2678	ENSG00000100031	gamma-glutamyltransferase 1
+GGT1	2678	ENSG00000286070	gamma-glutamyltransferase 1
+GIMAP1	170575	ENSG00000213203	GTPase, IMAP family member 1
+GIMAP2	26157	ENSG00000106560	GTPase, IMAP family member 2
+GIMAP4	55303	ENSG00000133574	GTPase, IMAP family member 4
+GIMAP5	55340	ENSG00000196329	GTPase, IMAP family member 5
+GIMAP6	474344	ENSG00000133561	GTPase, IMAP family member 6
+GIMAP7	168537	ENSG00000179144	GTPase, IMAP family member 7
+GIMAP8	155038	ENSG00000171115	GTPase, IMAP family member 8
+GJB2	2706	ENSG00000165474	gap junction protein beta 2
+GJB6	10804	ENSG00000121742	gap junction protein beta 6
+GLIPR1L1	256710	ENSG00000173401	GLIPR1 like 1
+GLIPR1L2	144321	ENSG00000180481	GLIPR1 like 2
+GNG5	2787	ENSG00000174021	G protein subunit gamma 5
+HELZ2	85441	ENSG00000130589	helicase with zinc finger 2
+HES5	388585	ENSG00000197921	hes family bHLH transcription factor 5
+HES5	388585	ENSG00000273529	hes family bHLH transcription factor 5
+IFI27L2	83982	ENSG00000119632	interferon alpha inducible protein 27 like 2
+IFI27L2	83982	ENSG00000276879	interferon alpha inducible protein 27 like 2
+IFIT1B	439996	ENSG00000204010	interferon induced protein with tetratricopeptide repeats 1B
+IFIT1	3434	ENSG00000185745	interferon induced protein with tetratricopeptide repeats 1
+IL4R	3566	ENSG00000077238	interleukin 4 receptor
+LGALS2	3957	ENSG00000100079	galectin 2
+LGALS9C	654346	ENSG00000171916	galectin 9C
+LGALS9C	654346	ENSG00000284021	galectin 9C
+LRAT	9227	ENSG00000121207	lecithin retinol acyltransferase
+LSM5	23658	ENSG00000106355	LSM5 homolog, U6 small nuclear RNA and mRNA degradation associated
+MSLN	10232	ENSG00000102854	mesothelin
+PARP14	54625	ENSG00000173193	poly(ADP-ribose) polymerase family member 14
+PHF11	51131	ENSG00000136147	PHD finger protein 11
+PMAIP1	5366	ENSG00000141682	phorbol-12-myristate-13-acetate-induced protein 1
+PRRG2	5639	ENSG00000126460	proline rich and Gla domain 2
+PTMA	5757	ENSG00000187514	prothymosin alpha
+PTTG1IP	754	ENSG00000183255	PTTG1 interacting protein
+PYCARD	29108	ENSG00000103490	PYD and CARD domain containing
+RNF114	55905	ENSG00000124226	ring finger protein 114
+RNF213	57674	ENSG00000173821	ring finger protein 213
+RPL5	6125	ENSG00000122406	ribosomal protein L5
+S100A16	140576	ENSG00000188643	S100 calcium binding protein A16
+SP140L	93349	ENSG00000185404	SP140 nuclear body protein like
+SPACA4	171169	ENSG00000177202	sperm acrosome associated 4
+TAP1	6890	ENSG00000168394	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000224212	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000230705	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000206297	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000232367	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000224748	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000226173	transporter 1, ATP binding cassette subfamily B member
+TAP1	6890	ENSG00000227816	transporter 1, ATP binding cassette subfamily B member
+TMSB15A	11013	ENSG00000158164	thymosin beta 15a
+TMSB15B	286527	ENSG00000158427	thymosin beta 15B
+TMSB15B	286527	ENSG00000269226	thymosin beta 15B
+TNFRSF1A	7132	ENSG00000067182	TNF receptor superfamily member 1A
+TOMM5	401505	ENSG00000175768	translocase of outer mitochondrial membrane 5
+TREX1	11277	ENSG00000213689	three prime repair exonuclease 1
+TREX2	11219	ENSG00000183479	three prime repair exonuclease 2
+TRIM39	56658	ENSG00000204599	tripartite motif containing 39
+TRIM39	56658	ENSG00000224994	tripartite motif containing 39
+TRIM39	56658	ENSG00000229929	tripartite motif containing 39
+TRIM39	56658	ENSG00000226437	tripartite motif containing 39
+TRIM39	56658	ENSG00000230308	tripartite motif containing 39
+TRIM39	56658	ENSG00000206495	tripartite motif containing 39
+TRIM39	56658	ENSG00000232839	tripartite motif containing 39
+UBE2W	55284	ENSG00000104343	ubiquitin conjugating enzyme E2 W
+VAMP8	8673	ENSG00000118640	vesicle associated membrane protein 8
+VWA5A	4013	ENSG00000110002	von Willebrand factor A domain containing 5A
+XAF1	54739	ENSG00000132530	XIAP associated factor 1
+OTUD1	220213	ENSG00000165312	OTU deubiquitinase 1
+MNDA	4332	ENSG00000163563	myeloid cell nuclear differentiation antigen
+FCGR3A	2214	ENSG00000203747	Fc fragment of IgG receptor IIIa
+FCGR3B	2215	ENSG00000162747	Fc fragment of IgG receptor IIIb
+TRIB3	57761	ENSG00000101255	tribbles pseudokinase 3
+TNFSF14	8740	ENSG00000125735	TNF superfamily member 14
+MID1	4281	ENSG00000101871	midline 1
+KMO	8564	ENSG00000117009	kynurenine 3-monooxygenase
+PARP11	57097	ENSG00000111224	poly(ADP-ribose) polymerase family member 11
+SERPINA3	12	ENSG00000196136	serpin family A member 3
+GRASP	160622	ENSG00000161835	general receptor for phosphoinositides 1 associated scaffold protein
+KDR	3791	ENSG00000128052	kinase insert domain receptor
+LIPG	9388	ENSG00000101670	lipase G, endothelial type
+SLFN5	162394	ENSG00000166750	schlafen family member 5
+SLFN11	91607	ENSG00000172716	schlafen family member 11
+SLFN12	55106	ENSG00000172123	schlafen family member 12
+SLFN12L	100506736	ENSG00000205045	schlafen family member 12 like
+SELP	6403	ENSG00000174175	selectin P
+ISOC1	51015	ENSG00000066583	isochorismatase domain containing 1
+GBP6	163351	ENSG00000183347	guanylate binding protein family member 6
+SLC25A22	79751	ENSG00000177542	solute carrier family 25 member 22
+ZBP1	81030	ENSG00000124256	Z-DNA binding protein 1
+CD300LF	146722	ENSG00000186074	CD300 molecule like family member f
+SECTM1	6398	ENSG00000141574	secreted and transmembrane 1
+CBX4	8535	ENSG00000141582	chromobox 4
+ABTB2	25841	ENSG00000166016	ankyrin repeat and BTB domain containing 2
+PPP1R3D	5509	ENSG00000132825	protein phosphatase 1 regulatory subunit 3D
+SLC30A1	7779	ENSG00000170385	solute carrier family 30 member 1
+B4GALT4	8702	ENSG00000121578	beta-1,4-galactosyltransferase 4
+ZCCHC2	54877	ENSG00000141664	zinc finger CCHC-type containing 2
+DENND1B	163486	ENSG00000213047	DENN domain containing 1B
+ETNK1	55500	ENSG00000139163	ethanolamine kinase 1
+GPR146	115330	ENSG00000164849	G protein-coupled receptor 146
+DCP2	167227	ENSG00000172795	decapping mRNA 2
+PEX26	55670	ENSG00000215193	peroxisomal biogenesis factor 26
+NR4A2	4929	ENSG00000153234	nuclear receptor subfamily 4 group A member 2
+NFXL1	152518	ENSG00000170448	nuclear transcription factor, X-box binding like 1
+MLKL	197259	ENSG00000168404	mixed lineage kinase domain like pseudokinase
+SLAMF8	56833	ENSG00000158714	SLAM family member 8
