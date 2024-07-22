@@ -1,0 +1,1268 @@
+---
+title: source code corresponding to Bezemer et al., 2025 
+author: "Rebecca Halbach"
+date: '2024-07-22'
+output: html_document
+---
+
+# About
+
+This script represents the source code used to generate the RNA-seq data presented in Bezemer et al., Transcriptional responses to Zika and dengue virus infection in iPSC-derived neural progenitor cells and endothelial cells (2025).   
+
+# Libraries
+
+This script requires:
+
+* R version 4.1.3
+* tidyverse 1.3.2
+* AnnotationDbi 1.56.2
+* org.Hs.eg.db 3.14.0
+* DESeq2 1.34.0
+* ggrepel 0.9.1
+* ggVennDiagram 1.2.2
+* clusterProfiler 4.2.2
+* factoextra 1.0.7
+  
+  
+```{r message=FALSE, warning=FALSE, echo =F}
+
+library(tidyverse)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(DESeq2)
+library(ggrepel)
+library(ggVennDiagram)
+library(clusterProfiler)
+library(factoextra)
+
+```
+
+# Overview
+
+Zika virus (ZIKV) and dengue virus (DENV) infect similar cell types, yet induce different symptoms in humans. ZIKV infections are associated with microcephaly in foetuses and Guillain-Barre syndrome in adults, whereas DENV infections are associated with haemorrhagic fever and shock. In addition, differences in symptoms are also observed between Asian (AS) and African (AF) strains of ZIKV. Infections with ZIKV-AF are often lethal to the developing embryo, whereas ZIKV-AS infections more often lead to microcephaly.  
+Samples: human induced pluripotent stem cells (iPSCs) were differentiated into neural progenitor-like cells (NPCs) and endothelial-like cells (ECs). These cells were mock-infected or infected with ZIKV-AS, ZIKV-AF or DENV-2 in 3 independent experiments. RNA was isolated 48 hours post-infection using TRIzol. Libraries were generated using the TruSeq Stranded mRNA Library Prep kit. The libraries were sequenced on a Illumina HiSeq1000 platform, and were named RDVJ344-RDVJ366.  
+  
+Mapping: Libraries were mapped on human genome hg19 and quantified with STAR in 2-pass mode.The genome fasta was downloaded from ENSEMBL (ftp://ftp.ensembl.org/pub/release-98/fasta/homo_sapiens/dna/) as individual fasta files for each chromosome and then concatenated to a single fasta before mapping.
+
+
+# General settings
+
+1. Parameters and cutoffs used throughout the analysis:
+
+```{r}
+
+set.seed(123)
+
+
+### Testing with DEseq ###
+
+# false discovery rate (FDR)
+DESeqSigLevel <- 0.01
+
+# log2 fold change (lfcThreshold)
+DESeqLog2FC <- 0.5
+
+# Filtering lowly abundant genes: minimal counts (across all samples)
+# Note: not strictly required with independent filtering in DESeq
+DESeqMinCount <- 0
+
+# Filtering lowly expressed genes: minimal baseMean to be considered in subsequnt alayses (after calling DESeq2::results())
+minBaseMean <- 0
+
+
+### GO enrichment ###
+
+#FDR to be used in GO enrichment
+GOSigLevel <- 0.05
+
+
+### Plotting ###
+
+#for plotting on log scale
+pseudocount <- 1
+
+
+```
+
+
+2. Settings for creating plots:
+
+```{r, message=FALSE}
+
+# custom theme to be used for all plots
+# white background for plot and legend, axis lines, light gray grid lines
+
+myTheme <- theme(axis.line = element_line(),
+                 panel.grid = element_blank(),
+                 panel.background = element_blank(),
+                 panel.grid.major = element_line(color="gray97"),
+                 legend.key=element_blank(),
+                 plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+
+
+
+### Colours ###
+
+# Color palette is based on the Hilda palette from tvthemes by Ryo Nakagawara
+# https://ryo-n7.github.io/2019-09-06-tvthemes-CRAN-announcement/
+
+# specifying individual colours that are used a lot:
+
+colorRed <- "#D65B5A"
+colorBlue <- "#586085"
+colorGray <- "gray85"
+colorWhite <- "#F6E0D2"
+colorHighlight <- "#824B51"
+
+# colours for conditions: mock, DENV, ZIKVAF, ZIKVAS
+# (yellow, green, orange, dark brown)
+
+colorSchemeVirus <- c("#F5C98E", "#659794","#9C6755", "#EA967C")
+
+# broken white, light brown
+colorSchemeHighlight <- c("#F6E0D2", "#DFA398")
+
+
+```
+
+3. Specifying genes to be highlighted in plots
+
+Definition of ISG (interferone-stimulated genes): As ISGs we considered all genes that were published as interferone regulated in mouse, zebrafish, or human by one of:
+* Li et al, mBio 2013, doi: 10.1128/mBio.00385-13 (human)
+* Liu et al, PNAS 2012, doi: 10.1073/pnas.1114981109 (mouse) 
+* Levraud, Biorxiv, 2019, doi: https://doi.org/10.1101/693333 (zebrafish)
+Mouse or zebrafish genes were converted to human orthologs with Biomart (https://www.ensembl.org/biomart/martview/aa5ffbd59790ea9fa4d7b8882ebc5cb1), and non-orthologous genes were dropped.  
+
+```{r, echo = F, message = F}
+
+# Read in table of ISGs, extract gene names (ENSEMBL identifiers)
+ISGList= read_delim("Metadata/ISGs/ISG_table_all.tsv",
+                     delim = "\t",
+                     col_names = TRUE) %>%
+  arrange(gene) %>%
+  pull(gene) %>%
+  unique()
+
+
+# genes to be labeled in plots
+GenesLabelISG <- c( "OAS2", "RSAD2", "CXCL11", "HERC5", "CCL5", "IFI6")
+GenesLabelAPO <- c("APOL1", "APOL2", "APOL6")
+
+
+```
+
+
+# Functions
+
+```{r, message=FALSE}
+
+### PCA plot ###
+
+# perform PCA and plot the results
+# based on DESeq2::plotPCA, but then with a custom plot
+#
+# Input:
+# object: a DESeqDataSet object
+# intgroup: a character vector of names from colData of the DeSeqDataset (max 2 elements). Used for grouping: 
+#       (first entry will be used for defining colours, second entry for shape of dots in the plot)
+
+customPCAplot <- function(object, intgroup){
+        
+        # variant stabilizing transformation for dispersion trend estimation
+        # based on http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#extracting-transformed-values
+        vsd <- vst(object, blind = FALSE)
+        
+        # extracting information to customize plot 
+        # solution from http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#principal-component-plot-of-the-samples
+        vsdData <- plotPCA(vsd, 
+                intgroup = intgroup, returnData = TRUE) 
+                 
+        #extract percent variance that is explained by PCA
+        percentVar <- round(100 * attr(vsdData, "percentVar"))
+        
+        
+        # defining colour and shape arguments for ggplot
+        if (length(intgroup) > 1) {
+                colour <- intgroup[1]
+                shape <- intgroup[2]
+        } else {
+                colour <- intgroup
+                shape <- NULL
+        }
+        
+        # plot PCA
+        plot <- ggplot(vsdData, aes_string(x = "PC1", y = "PC2", 
+                            color = colour,
+                            shape = shape)) + 
+                       geom_point(size =3) +
+                scale_color_manual(values = colorSchemeVirus) +
+                xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+                ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+                coord_fixed() +
+                myTheme
+        
+        print(plot)
+        
+}
+
+
+### Statistical testing ###
+
+# Statistical analysis of DEseq with desired contrast/name, specified FDR and lcfThreshold
+# wrapper for DESeq2::results()
+#
+# Input:
+# 
+# dds: a DESeq object created with DESeq()
+# contrast: the groups for which the statistical test should be performed [c("condition", "test_level", "control_level")]
+# alpha: significance cutoff used to test FDR
+# AnnotationDF: tibble with annotation data (gene names etc) to merge with Results table
+# geneNames: value for renaming "gene" column in results table. Needs to be the same as in AnnotationDF 
+# ISGList: Character vector with ENSEMBL identifiers of genes annotated as ISGs
+
+extractResults <- function(dds, 
+                           contrast, 
+                           alpha = 0.01, 
+                           lfcThreshold = 1,
+                           AnnotationDF, 
+                           geneNames= "ENSEMBL",
+                           ISGList = ISGList){
+  
+  
+          # Calling DESeq2::results
+          Results <- results(dds, 
+                             contrast = contrast, 
+                             alpha = alpha,
+                             lfcThreshold= lfcThreshold,
+                             tidy= TRUE) %>%
+          # renaming the "row" column that contains gene names
+          dplyr::rename(!!quo_name(geneNames) := row) %>%
+          as_tibble() %>%
+                  
+          # remove genes for which no padj could be calculated
+          # applies to genes with zero counts, extreme outliers, or filtered by independent filtering
+          # https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#pvaluesNA
+          drop_na(padj) %>%
+                  
+          # add column with info on whether gene is significant, and if yes, whether it is an ISG or not
+          mutate(Sign = ifelse(padj >= alpha, "NotSign",
+                               ifelse(padj <= alpha & ENSEMBL %in% ISGList, "SignISG", "Significant"))) %>%
+                  
+          # filter out low count genes
+          filter(baseMean >= minBaseMean) %>%
+                  
+          # combine with Annotation data
+          left_join(AnnotationDF) %>%
+                  
+          # remove genes that are duplicated (e.g. because there are two ENTREZID numbers for one ENSEBLID)   
+          distinct(ENSEMBL, .keep_all = TRUE)          
+
+}
+
+
+### Scatter plot of genes ###
+
+# plot the counts of all genes as scatter plot
+# indicating up/down-regulated genes and ISGs by colour-coding
+#
+# Input:
+# counts: a tibble in long format containing normalized counts (mean of replicates)
+# ResultsTable: tibble; output from DESeq2:results() to be used for extracting information on statistics (padj values)
+# virus: name of virus used for the comparison
+# cellline: name of cell line used for comparison
+# genesToLabel: character vector with gene SYMBOLs of genes that should be labeled in the plot
+
+plotCountsScatter <- function(counts, 
+                              ResultsTable, 
+                              virus, 
+                              cellline,
+                              genesToLabel){
+  
+ 
+  
+        CountsFiltered <- counts %>%
+                ungroup() %>%
+                
+                # remove columns that are not needed
+                dplyr::select(-VirusCellLine) %>%
+                
+                # extract only counts for virus (and mock) to be plotted
+                filter(CellLine == !!cellline,
+                        Virus == "Mock" | Virus == !!virus) %>%
+                
+                # add pseudocount for plotting zero values on log scale
+                mutate(AverageCount = AverageCount + pseudocount) %>%
+                
+                # wide format
+                pivot_wider(names_from = Virus, values_from = AverageCount) %>%
+                
+                # merge with results from DESeq2 for info on padj values
+                left_join(ResultsTable) %>%
+                
+                drop_na(padj) 
+  
+  
+  
+        # plot in different layers to not have significant genes being hidden under non-significant genes
+        plot <- ggplot() +
+                
+                # plot genes that are not significant
+                geom_point(data = CountsFiltered %>% filter( Sign == "NotSign" ),
+                       aes_(x = ~ Mock, y =  as.name(virus), colour = "not_sign"),
+                       alpha = 0.3) +
+                
+                # plot significantly down-regulated genes that are no ISGs    
+                geom_point(data = CountsFiltered %>% filter( Sign == "Significant" & log2FoldChange < 0 ),
+                       aes_(x = ~ Mock, y =  as.name(virus),  colour = "down"),
+                       alpha = 0.3) +
+                
+                # plot significantly up-regulated genes that are no ISGs
+                geom_point(data = CountsFiltered %>% filter( Sign == "Significant" & log2FoldChange >= 0),
+                       aes_(x = ~ Mock, y =  as.name(virus), colour = "up"),
+                       alpha = 0.3) +
+                
+                # plot ISGs (significantly deregulated)
+                geom_point(data = CountsFiltered %>% filter( Sign == "SignISG" ),
+                       aes_(x = ~ Mock, y =  as.name(virus), colour =  "ISG"),
+                       alpha = 0.8) +
+                
+                # log2 scale
+                scale_x_continuous(trans = "log2") +
+                scale_y_continuous(trans = "log2") +
+                coord_fixed(ratio = 1, xlim = c(NA,800000), ylim = c(NA,800000)) +
+                
+                
+                # add lines to indicate x = y, and a 2-fold change (log2(1))
+                geom_abline(slope = 1, intercept = 0) +
+                geom_abline(slope = 1, intercept = -1) +
+                geom_abline(slope = 1, intercept = 1) +
+                
+                # manually define colours for legend
+                scale_color_manual(breaks=c( "not_sign", "down", "up", "ISG"),
+                                   values=c("not_sign" = colorGray,
+                                            "down" = colorBlue,
+                                            "up" = colorRed,
+                                            "ISG" = colorHighlight)) +
+                
+                # label some of the genes
+                geom_label_repel(
+                                  data = subset(CountsFiltered, SYMBOL %in% genesToLabel),
+                                  mapping = aes_(x = ~ Mock, y = as.name(virus), label = ~SYMBOL),
+                                  fill = alpha(c("white"), 0.5),
+                                  colour = "black",
+                                  linewidth = 0,
+                                  size = 3,
+                                  box.padding = unit(1.2, "lines"),  # I set it to 1.2 because in one plot 
+                                                                     # two labels always overlaped
+                                  point.padding = unit(0.1, "lines"),
+                                  min.segment.length = 0,
+                                  max.overlaps = Inf) +
+              
+                myTheme +
+                theme(axis.text=element_text(size=8))+
+                
+                ggtitle(paste(virus, "infection in", cellline))
+          
+  print(plot)
+  
+  
+}
+
+
+### Volcano plot ###
+
+# plotting the log2 fold change and significance (padj value)
+# 
+# Input:
+# ResultsTable: output from DESeq2:result as tibble
+# genesToLabel: character vector with gene SYMBOLs of genes that should be labeled in the plot
+
+plotVolcano <- function(ResultsTable, 
+                        genesToLabel){
+        
+        # plot in different layers to not have significant genes being hidden under non-significant genes
+        plot <- ggplot( ) +
+                
+                # plot genes that are not significant    
+                geom_point(data = ResultsTable %>% filter( Sign == "NotSign" ),
+                       aes(log2FoldChange, -log10(padj), colour = "not_sign"),
+                       alpha = 0.3) +
+                
+                # plot significantly down-regulated genes that are no ISGs    
+                geom_point(data = ResultsTable %>% filter( Sign == "Significant" & log2FoldChange < 0 ),
+                       aes(log2FoldChange, -log10(padj),  colour = "down"),
+                       alpha = 0.3) +
+                
+                # plot significantly up-regulated genes that are no ISGs
+                geom_point(data = ResultsTable %>% filter( Sign == "Significant" & log2FoldChange >= 0),
+                       aes(log2FoldChange, -log10(padj), colour = "up"),
+                       alpha = 0.3) +
+                
+                # plot ISGs (significantly deregulated)
+                geom_point(data = ResultsTable %>% filter( Sign == "SignISG" ),
+                       aes(log2FoldChange, -log10(padj), colour =  "ISG"),
+                       alpha = 0.8) +
+            
+                xlim(-12,12) +
+                
+                # manually define colours for legend
+                scale_color_manual(breaks=c( "not_sign", "down", "up", "ISG"),
+                             values=c("not_sign" = colorGray,
+                                      "down" = colorBlue,
+                                      "up" = colorRed,
+                                      "ISG" = colorHighlight)) +
+                
+                # label some of the genes (only if significant)
+                geom_label_repel(
+                        data = subset(ResultsTable, SYMBOL %in% genesToLabel & (Sign == "Significant" | Sign == "SignISG")),
+                        aes(log2FoldChange, -log10(padj),
+                            label = SYMBOL),
+                        fill = alpha(c("white"), 0.5),
+                        colour = "black",
+                        size = 3,
+                        box.padding = unit(1, "lines"),
+                        point.padding = unit(0.1, "lines"),
+                        min.segment.length = 0,
+                        max.overlaps = Inf ) +
+                
+                ggtitle(deparse(substitute(ResultsTable))) +
+                myTheme
+            
+  
+        print(plot)
+  
+}
+
+
+
+### GO enrichment ###
+
+# Perform GO enrichment with clusterProfiler
+# Enriched GO-terms are then simplified to remove redundancy
+# Output is a tibble with GO terms and enrichment
+#
+# Input:
+# ResultsTable: output from DESeq2:result as tibble. Needs to contain ENSEMBL identifiers
+
+
+extractGOterms <- function(ResultsTable){
+  
+        ResultsTableSorted <- ResultsTable %>%
+                arrange(desc(log2FoldChange)) %>%
+                drop_na(ENSEMBL, log2FoldChange, padj)
+    
+    #extract vector of all genes as universe
+    universe <- ResultsTableSorted %>% pull(ENSEMBL)
+    
+    #extract vector of significant genes
+    genes <- ResultsTableSorted %>% filter(padj <= DESeqSigLevel) %>%  pull(ENSEMBL)
+    
+    go <- enrichGO(gene = genes, 
+                   universe = universe,
+                   ont ="BP", 
+                   keyType = "ENSEMBL", 
+                   pvalueCutoff = GOSigLevel,
+                   qvalueCutoff = GOSigLevel,
+                   OrgDb = org.Hs.eg.db) #%>% 
+    go <- simplify(go, 
+                   cutoff=0.7, 
+                   by="p.adjust", 
+                   select_fun=min)
+    
+    GoResults <- go %>%  
+        as_tibble() %>%
+        arrange(desc(qvalue)) %>%
+        mutate(Description = as_factor(Description))
+    
+    
+}
+
+plotGOterms <- function(GOResults, n=15) {
+  
+  #GOResults: Output from extractGOterms(), containing results of enrichGO in tibble format
+  #n: number of top enriched GO terms to plot (based on qvalue)
+  
+  plot <- ggplot(GOResults %>% top_n(n),
+            aes(-log10(qvalue), Description, fill = Count)) +
+        geom_bar(stat = "identity") +
+        scale_fill_gradient(high = colorBlue,
+                          low = colorWhite,
+                          na.value = "gray85") +
+        myTheme +
+        ggtitle(deparse(substitute(GOResults)))
+  
+  print(plot)
+  
+}
+
+
+#### log2 fold changes between conditions ###
+
+# Plotting the log2 fold changes (for each gene) between two conditions 
+# -> comparisons between cell lines or viruses
+#
+# Input:
+# ResultsTable1: output from DESeq2::results, as tibble. 
+#                Need to contain a gene identifier column named "ENSEMBL" and "SYMBOL" (via join from org.db object).
+#                Will be plotted on x-axis
+# ResultsTable2: output from DESeq2::results, as tibble. 
+#                Need to contain a gene identifier column named "ENSEMBL" and "SYMBOL" (via join from org.db object).
+#                Will be plotted on y-axis
+# genesToLabel: character vector with gene SYMBOLs of genes that should be labeled in the plot
+
+CompareLog2FoldChange <- function(ResultsTable1, ResultsTable2,
+                                  genesToLabel){
+  
+  
+  # keep info on log2 fold changes and gene identifiers
+  # rename columns in order to merge with other results table in second step
+  ResultsTable <- ResultsTable2 %>%
+      dplyr::select(ENSEMBL,
+                    SYMBOL,
+                    log2FoldChange.y =log2FoldChange,
+                    Sign.y = Sign) 
+     
+  # keep info on log2 fold changes and gene identifiers
+  # join with other dataset
+  Log2FoldChanges <- ResultsTable1 %>%
+    dplyr::select(ENSEMBL, 
+                  SYMBOL,
+                  log2FoldChange,
+                  Sign) %>%
+    inner_join(ResultsTable) %>%
+          
+    # assign label based on whtether gene is significantly deregulated in one, both or none of the two conditions
+    mutate(SignWhich = ifelse(Sign == "NotSign" & Sign.y == "NotSign", "NotSignBoth",
+                              ifelse(Sign != "NotSign" & Sign.y != "NotSign", "Sign.Both", "Sign.One")))
+                              
+  
+  
+  plot <- ggplot() +
+          
+            # plot genes that are not significantly differentially expressed in any of the two conditions
+            geom_point(data = Log2FoldChanges %>% filter(SignWhich == "NotSignBoth"),
+               aes(log2FoldChange, log2FoldChange.y, colour = "not_sign"),
+               alpha = 0.3) +
+          
+            # plot genes that are  significantly differentially expressed in one of the two conditions  
+            geom_point(data = Log2FoldChanges %>% filter( SignWhich == "Sign.One" ),
+               aes(log2FoldChange, log2FoldChange.y,  colour = "SignOne"),
+               alpha = 0.3) +
+          
+            # plot genes that are  significantly differentially expressed in both conditions
+            geom_point(data = Log2FoldChanges %>% filter( SignWhich == "Sign.Both"),
+               aes(log2FoldChange, log2FoldChange.y, colour = "SignBoth"),
+               alpha = 0.3) +
+    
+            # manually define colours for legend legend  
+            scale_color_manual(breaks=c( "not_sign", "SignOne", "SignBoth"),
+                             values=c("not_sign" = colorGray,
+                                      "SignOne" = colorSchemeHighlight[2],
+                                      "SignBoth" = colorBlue)) +
+          
+            # add lines for x = y, and the four quadrants
+            geom_vline(xintercept = 0) +
+            geom_hline(yintercept = 0) +
+            geom_abline(intercept = 0, slope = 1) +
+            coord_fixed(ratio = 1, xlim = c(-5, 11), ylim = c(-5, 11))+
+            
+            # label some of the genes
+            geom_label_repel(
+                data = subset(Log2FoldChanges, SYMBOL %in% genesToLabel),
+                aes(log2FoldChange, log2FoldChange.y,
+                    label = SYMBOL),
+                fill = alpha(c("white"), 0.5),
+                colour = "black",
+                alpha = 0.5,
+                size = 3,
+                box.padding = unit(1, "lines"),
+                point.padding = unit(0.1, "lines"),
+                min.segment.length = 0,
+                max.overlaps = Inf ) +
+            
+            
+            # manually set axis and plot titles
+            ggtitle( paste( deparse(substitute(ResultsTable1)), "vs.", deparse(substitute(ResultsTable2) ))) + 
+            xlab(paste("log2FC" , deparse(substitute(ResultsTable1)))) +
+            ylab(paste("log2FC" , deparse(substitute(ResultsTable2))))+
+   
+            myTheme +
+            theme(axis.text=element_text(size=8))
+          
+            
+                 
+         
+  print(plot)
+  
+}
+
+```
+
+# Data   
+### Metadata for sequencing run:
+
+```{r, echo = F, message = F}
+
+
+# Load information on libraries
+
+metadata= read_delim("Metadata/metadata_Bodine_RNAseq.csv", 
+                     delim=";")
+
+
+# construct table to be used as column data (metadata for sequencing libraries) for DEseq
+
+sampleTable = metadata %>%
+          dplyr::select(Sample_name,
+                        Virus, 
+                        Cell_line, 
+                        Replicate_number) %>%
+          # manually set order levels in order to plot them in correct order in later analyses
+          mutate(Virus=factor(Virus,
+                              levels=c("Mock", "DENV", "ZIKVAF", "ZIKVAS")),
+                 Cell_line=factor(Cell_line,
+                                  levels = c("NPC", "iEC")),
+                 CellLineVirus=factor(paste(Cell_line, Virus, sep = "_"))) %>%  #column to use in DEseq design
+          as.data.frame()
+
+# extract names of libraries for DEseq
+
+SampleNames = sampleTable %>% 
+        pull(Sample_name)
+
+```
+
+
+### Annotation data
+
+Annotation data for human genes are retried from AnnotationHub (org.Hs.eg.db)
+
+```{r, echo = F, message = F}
+
+# Extract info on all genes from org.db object
+# (Needed for downstream analyses)
+
+AnnotationHs <- AnnotationDbi::select(org.Hs.eg.db, 
+              columns = c("GENENAME",  "SYMBOL", "ENTREZID"), 
+              keys= keys(org.Hs.eg.db, "ENSEMBL"),
+              keytype= "ENSEMBL") 
+  
+
+```
+
+### RNA-seq quantification files
+
+Raw read counts as output from STAR aligner (Dobin et al, Bioinformatics 2013)
+
+```{r message=FALSE, echo = F}
+
+# path to files 
+
+Dir  <- "20191213.STARMapping"
+FilePath <- dir("20191213.STARMapping/", "ReadsPerGene.out.tab")
+FilesRNAseq <- file.path(Dir, FilePath)
+
+names(FilesRNAseq) <- paste0(SampleNames)
+
+
+# isolate gene names for first column in table
+# used to merge all count data into one table in next step
+
+countMatrixSTAR <- read_delim(FilesRNAseq[1], delim ="\t", col_names=FALSE) %>% 
+  dplyr::select("X1") %>%
+  dplyr::slice(5:n()) %>%
+  dplyr::rename(ENSEMBL= X1)
+  
+
+
+# read in files and join to one big table
+
+for (i in 1: length(FilesRNAseq)){
+        
+  # column 1 contains gene names
+  # column 4 contains quantification of reads from reverse strand (which is how libraries were sequenced)
+        
+  x <- read_delim(FilesRNAseq[i], delim = "\t", col_names = FALSE) %>%
+    dplyr::select("X1", "X4") %>%
+    dplyr::slice(5:n()) 
+  
+  colnames(x) <- c("ENSEMBL", names(FilesRNAseq)[i])
+  
+  # merge with previously read quantification
+  
+  countMatrixSTAR <- left_join(countMatrixSTAR, x, by= "ENSEMBL")
+  
+}
+
+
+
+# Convert gene names to column names to convert table to matrix for DEseq
+
+countMatrixSTAR <- countMatrixSTAR  %>%
+  as.data.frame() 
+  
+# convert to matrix (needed as input for DESeq)
+
+rownames(countMatrixSTAR) <- countMatrixSTAR$ENSEMBL
+countMatrixSTAR <- as.matrix(countMatrixSTAR[, 2:ncol(countMatrixSTAR)])
+
+
+# Prepare sample table for DESeq2
+
+rownames(sampleTable) <- colnames(countMatrixSTAR)
+
+
+```
+
+
+# Statistical Analysis
+
+### Quality control
+
+```{r PCA, mesage= F, echo = F, fig.width= 5, fig.height= 5}
+
+# construct ddsDataSet (needed for analyses)
+# design is unspecified for quality controls (design = ~1)
+
+ddsDataSet <- DESeqDataSetFromMatrix(countData = countMatrixSTAR, 
+                              colData = sampleTable, 
+                              design = ~1)
+
+# filter out genes with zero count in all conditions
+
+ddsDataSet <- ddsDataSet[rowSums(counts(ddsDataSet))>1,]
+
+
+### PCA plot ###
+
+# plotting all data at once
+dds <- DESeq(ddsDataSet)
+customPCAplot(dds, intgroup = c("Virus", "Cell_line"))
+
+# Plotting cell lines separately, since cell line contributes most of the variation in data sets
+
+# for NPC
+dds_NPC <- ddsDataSet[, ddsDataSet$Cell_line %in% "NPC"]
+dds_NPC$Cell_line <- droplevels(dds_NPC$Cell_line)
+customPCAplot(dds_NPC, intgroup = "Virus")
+
+
+# for iEC
+dds_iEC <- ddsDataSet[, ddsDataSet$Cell_line %in% "iEC"]
+dds_iEC$Cell_line <- droplevels(dds_iEC$Cell_line)
+customPCAplot(dds_iEC, intgroup = "Virus")
+
+
+# clean-up to have less files in memory:
+rm(list = ls(pattern = 'dds_'))
+
+
+```
+
+### Statistical testing
+
+```{r, mesage= F, echo = F, include=FALSE}
+
+# create dds dataset again (this time with specified design) for testing
+# design is combination of virus and cell line (combined into one variable)
+
+ddsDataSet <- DESeqDataSetFromMatrix(countData = countMatrixSTAR, 
+                            colData = sampleTable, 
+                            design = ~ CellLineVirus)
+
+
+# filter out low count reads
+
+keep <- rowSums(counts(ddsDataSet)) >= DESeqMinCount
+ddsDataSet <- ddsDataSet[keep,]
+
+dds <- DESeq(ddsDataSet)
+
+
+
+# clean-up to reduce memory usage
+
+rm(keep)
+rm(ddsDataSet)
+rm(countMatrixSTAR)
+```
+
+Extract results for all viruses in both cell lines
+
+```{r, message =F, echo = F}
+
+# Extract results table for all infections in all cell line
+# Annotation for human and whether gene is ISG or not is added
+
+ResultsDENV_NPC <- extractResults(dds, 
+                              contrast = c("CellLineVirus","NPC_DENV","NPC_Mock"),
+                              alpha = DESeqSigLevel,
+                              lfcThreshold = DESeqLog2FC,
+                              geneNames = "ENSEMBL",
+                              AnnotationDF = AnnotationHs,
+                              ISGList = ISGList)
+
+ResultsDENV_iEC <- extractResults(dds, 
+                              contrast = c("CellLineVirus","iEC_DENV","iEC_Mock"),
+                              alpha = DESeqSigLevel,
+                              lfcThreshold = DESeqLog2FC,
+                              geneNames = "ENSEMBL",
+                              AnnotationDF = AnnotationHs,
+                              ISGList = ISGList)
+
+ResultsZIKVAS_NPC <- extractResults(dds, 
+                              contrast = c("CellLineVirus","NPC_ZIKVAS","NPC_Mock"),
+                              alpha = DESeqSigLevel, 
+                              lfcThreshold = DESeqLog2FC,
+                              geneNames = "ENSEMBL",
+                              AnnotationDF = AnnotationHs,
+                              ISGList = ISGList)
+
+ResultsZIKVAS_iEC <- extractResults(dds, 
+                              contrast = c("CellLineVirus","iEC_ZIKVAS","iEC_Mock"),
+                              alpha = DESeqSigLevel, 
+                              lfcThreshold = DESeqLog2FC,
+                              geneNames = "ENSEMBL",
+                              AnnotationDF = AnnotationHs,
+                              ISGList = ISGList)
+
+ResultsZIKVAF_NPC <- extractResults(dds, 
+                              contrast = c("CellLineVirus","NPC_ZIKVAF","NPC_Mock"),
+                              alpha = DESeqSigLevel,
+                              lfcThreshold = DESeqLog2FC,
+                              geneNames = "ENSEMBL",
+                              AnnotationDF = AnnotationHs,
+                              ISGList = ISGList)
+
+ResultsZIKVAF_iEC <- extractResults(dds, 
+                              contrast = c("CellLineVirus","iEC_ZIKVAF","iEC_Mock"),
+                              alpha = DESeqSigLevel, 
+                              lfcThreshold = DESeqLog2FC,
+                              geneNames = "ENSEMBL",
+                              AnnotationDF = AnnotationHs,
+                              ISGList = ISGList)
+
+
+
+### Summarizing results ###
+
+# combining all results into one table (log2 fold change and padj) and
+# calculate summary statistics (# of DE genes, number of ISGs among DE genes, # of upregulated/downregulated genes)
+
+# first combine reuslts tables into list
+ListResultsTables <- list(ResultsDENV_NPC, ResultsDENV_iEC,  
+                          ResultsZIKVAS_NPC, ResultsZIKVAS_iEC, 
+                          ResultsZIKVAF_NPC, ResultsZIKVAF_iEC)
+NamesConditions <- c("DENV_NPC", "DENV_iEC", "ZIKVAS_NPC", "ZIKVAS_iEC","ZIKVAF_NPC", "ZIKVAF_iEC")
+
+# table: first column with gene names used to merge log2FC and padj values with for each condition
+
+ResultsAllFC <- ResultsDENV_iEC %>%
+      dplyr::select(ENSEMBL, SYMBOL)
+
+# merge all results into one big table
+# 
+# calculate and print summary stats
+for (i in 1:length(ListResultsTables)) {
+                
+          nameFC <- paste("log2FC", NamesConditions[i],  sep = ".") # change column name (below) 
+                                                                    # to avoid duplicated column names
+          namePadj <- paste("padj", NamesConditions[i],  sep = ".")
+          
+          # make table with all fold changes and p values for all conditions
+          table <- ListResultsTables[[i]] %>%
+                dplyr::select( ENSEMBL, SYMBOL, log2FoldChange, padj) %>%
+                dplyr::rename(!!quo_name(nameFC) := log2FoldChange,
+                              !!quo_name(namePadj) := padj)
+          
+          ResultsAllFC <- left_join(ResultsAllFC, table)
+          
+          table <- table %>%
+            mutate(ISG = ifelse(ENSEMBL %in% ISGList, "ISG", "undefined"))
+          
+          # calculate stats
+          NoSign <- table %>% filter(!!sym(namePadj) <= DESeqSigLevel) %>% nrow()
+          NoUp <- table %>% filter(!!sym(namePadj) <= DESeqSigLevel & !!sym(nameFC) >= 0) %>% nrow()
+          NoDown <- table %>% filter(!!sym(namePadj) <= DESeqSigLevel & !!sym(nameFC) <= 0) %>% nrow()
+          NoISG <- table %>% filter(!!sym(namePadj) <= DESeqSigLevel & ENSEMBL %in% ISGList) %>% nrow()
+          PercISG <- NoISG / NoSign * 100
+          
+          print(paste("Comparison", NamesConditions[i], 
+                      "(vs. mock): Number of significant genes (with padj <=", DESeqSigLevel, "), (up/down):", 
+                      NoSign, "(", NoUp, "/", NoDown, ")", "-from which are ISGs:", NoISG, "(", PercISG, "%)"))
+  
+}
+
+
+# Clean-up to reduce memory usage:
+rm(ListResultsTables)
+```
+
+
+### Normalized counts
+
+Extract the normalized counts for all data sets for plotting
+
+```{r Counts}
+
+NormalizedCounts <- counts(dds,
+                           normalized=TRUE,
+                           replaced=FALSE) %>% 
+    as.data.frame() %>% 
+    rownames_to_column(var = "ENSEMBL") %>% 
+    as_tibble %>% 
+    # add annotation of genes to table
+    left_join(AnnotationHs) %>%
+    dplyr::select(!contains(c("GENENAME", "ENTREZID"))) %>%  
+  
+    pivot_longer(cols = !contains(c( "SYMBOL", "ENSEMBL")),
+                 names_to = "VirusCellLine",
+                 values_to = "NormCount") %>%
+    # remove replicate number from sample name (leave only name indicating cell line and virus)    
+    mutate(VirusCellLineRep = VirusCellLine,
+           VirusCellLine = str_extract(VirusCellLine, "[^_]*_[^_]*"),
+           VirusCellLine = as_factor(VirusCellLine),
+           VirusCellLine = fct_relevel(VirusCellLine, "NPC_Mock", "NPC_DENV", "NPC_ZIKVAS", "NPC_ZIKVAF",
+                                        "iEC_Mock", "iEC_DENV", "iEC_ZIKVAS", "iEC_ZIKVAF"))  %>%
+    # extract only virus name
+    mutate(CellLine = str_extract(VirusCellLine, "[^_]*"),
+           Virus = str_extract(VirusCellLine, "(?<=_).*")) %>%
+    # extract only cell line name
+    mutate(Virus = as_factor(Virus),
+           Virus = fct_relevel(Virus, "DENV", after = 1))
+
+# Average of the three replicates
+NormCountsAverage <- NormalizedCounts %>%
+    group_by(ENSEMBL, CellLine, Virus, VirusCellLine, SYMBOL) %>%
+    summarise(AverageCount = mean(NormCount)) %>%
+    ungroup()
+
+```
+
+# Exploratory analysis
+
+### Scatterplots counts
+Plot normalized counts (log2 with pseudocount of one) for all conditions.
+```{r scatter_plot, fig.height= 4, fig.width= 4.5}
+
+# GenesLabelISG is a vector with names of some interesting ISGs that are strongly significantly deregulated
+
+plotCountsScatter(counts = NormCountsAverage,
+                  ResultsTable = ResultsDENV_NPC,
+                  virus = "DENV",
+                  cellline = "NPC",
+                  genesToLabel = GenesLabelISG)
+
+plotCountsScatter(counts = NormCountsAverage,
+                  ResultsTable = ResultsDENV_iEC,
+                  virus = "DENV",
+                  cellline = "iEC",
+                  genesToLabel = GenesLabelISG)
+
+
+plotCountsScatter(counts = NormCountsAverage,
+                  ResultsTable = ResultsZIKVAS_NPC,
+                  virus = "ZIKVAS",
+                  cellline = "NPC",
+                  genesToLabel = GenesLabelISG)
+
+plotCountsScatter(counts = NormCountsAverage,
+                  ResultsTable = ResultsZIKVAS_iEC,
+                  virus = "ZIKVAS",
+                  cellline = "iEC",
+                  genesToLabel = GenesLabelISG)
+
+plotCountsScatter(counts = NormCountsAverage,
+                  ResultsTable = ResultsZIKVAF_NPC,
+                  virus = "ZIKVAF",
+                  cellline = "NPC",
+                  genesToLabel = GenesLabelISG)
+
+plotCountsScatter(counts = NormCountsAverage,
+                  ResultsTable = ResultsZIKVAF_iEC,
+                  virus = "ZIKVAF",
+                  cellline = "iEC",
+                  genesToLabel = GenesLabelISG)
+
+
+
+```
+
+### Volcano plots
+
+Plot volcano plot of results (log2 fold change vs padj values)
+
+```{r volcano_plot, fig.height= 4, fig.width= 4.5}
+
+# GenesLabelISG is a vector with names of some interesting ISGs that are strongly significantly deregulated
+
+plotVolcano(ResultsDENV_NPC,
+            genesToLabel = GenesLabelISG)
+
+plotVolcano(ResultsDENV_iEC,
+            genesToLabel = GenesLabelISG)
+
+plotVolcano(ResultsZIKVAS_NPC,
+            genesToLabel = GenesLabelISG)
+
+plotVolcano(ResultsZIKVAS_iEC,
+            genesToLabel = GenesLabelISG)
+
+plotVolcano(ResultsZIKVAF_NPC,
+            genesToLabel = GenesLabelISG)
+
+plotVolcano(ResultsZIKVAF_iEC,
+            genesToLabel = GenesLabelISG)
+
+```
+
+### GO-terms
+
+Performing GO enrichemnt analysis on significantly deregulated genes.
+```{r GOenrichment, fig.height= 4, fig.width= 7.5}
+
+# Plot q-value and number of genes for the top 15 significant GO terms 
+# (this is the output from clusterprofiler::enrichGO -> clusterprofiler::simplify)
+
+GODENV_NPC <- extractGOterms(ResultsDENV_NPC)
+plotGOterms(GODENV_NPC, n= 15)
+
+GODENV_iEC <- extractGOterms(ResultsDENV_iEC)
+plotGOterms(GODENV_iEC, n= 15)
+
+GOZIKVAS_NPC <- extractGOterms(ResultsZIKVAS_NPC)
+plotGOterms(GOZIKVAS_NPC, n= 15)
+
+GOZIKVAS_iEC <- extractGOterms(ResultsZIKVAS_iEC)
+plotGOterms(GOZIKVAS_iEC, n= 15)
+
+
+
+### constructing heatmap with top GOs in all conditions ###
+
+GOfiles <- list(GODENV_NPC, GODENV_iEC, GOZIKVAS_NPC, GOZIKVAS_iEC)
+names(GOfiles) <- NamesConditions[1:4]
+Gofiles_all <- tibble(Description = character()) # empty file
+
+# combine all qvalues in one file
+
+for(i in 1:length(GOfiles)){
+    
+    nameCondition <- NamesConditions[i]
+    file <- GOfiles[[i]] %>%
+        select(Description,
+               qvalue) %>%
+        dplyr::rename(!!quo_name(nameCondition) := qvalue)
+    
+    Gofiles_all <- full_join(Gofiles_all, file)
+}
+
+
+```
+
+Constructing a heatmap with GO terms from all conditions for comparative reasons.
+
+```{r, GO_heatmap, fig.height= 10, fig.width= 8}
+
+# filter and plot GO terms
+
+GOenrichedAll <- Gofiles_all %>%
+    pivot_longer(!Description,
+                 names_to = "Condition", values_to = "qvalue") %>%
+    group_by(Description) %>%
+        
+    # I will take along any GO term that has a q-value <= 10^-10 in any condition
+    # this turned out to be exactly 20 GO terms
+    filter(any(qvalue <= 10^-10)) %>%
+    arrange(qvalue) %>% # sort by qvalue in order to plot most significant genes on top
+    group_by(qvalue) %>%
+    arrange(Description, .by_group = TRUE) %>%
+    mutate(Description = as_factor(Description),
+           Description = fct_rev(Description))
+
+
+# plot as heatmap
+# note: if GO term is not significant in only some but not all conditions,
+# it is plotted with grey in conditions where the term is not significantly enriched
+
+ggplot(GOenrichedAll, 
+       aes(Condition, Description, fill = -log10(qvalue))) +
+      geom_tile() +
+      scale_fill_gradient(high = colorBlue,
+                          low = colorWhite,
+                          na.value = "gray85") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      myTheme
+ 
+
+
+```
+
+### Comparison cell lines
+
+Compare differentially regulated genes either between the same virus in two different cell lines, or two different viruses in the same cell line 
+
+```{r log2FC_comparison, fig.height= 4, fig.width= 4.5}
+
+# APOL genes responded different to virus infection in the two different cell lines
+# these are labeled in the plots (APOL1,2,5)
+
+CompareLog2FoldChange(ResultsDENV_NPC, ResultsDENV_iEC,
+                      genesToLabel = GenesLabelAPO)
+
+CompareLog2FoldChange(ResultsZIKVAS_NPC, ResultsZIKVAS_iEC,
+                      genesToLabel = GenesLabelAPO)
+
+CompareLog2FoldChange(ResultsZIKVAF_NPC, ResultsZIKVAF_iEC,
+                      genesToLabel = GenesLabelAPO)
+
+CompareLog2FoldChange(ResultsDENV_NPC, ResultsZIKVAS_NPC,
+                      genesToLabel = GenesLabelAPO)
+
+CompareLog2FoldChange(ResultsDENV_iEC, ResultsZIKVAS_iEC,
+                      genesToLabel = GenesLabelAPO)
+
+```
+
+```{r comparison_Venn, fig.height= 5, fig.width= 5}
+
+### Compare overlap of differentially expressed genes between conditions ###
+
+# plot Venn Diagram 
+# (solution from https://gaospecial.github.io/ggVennDiagram/articles/fully-customed)"
+
+#get gene names of all significant DE genes in all conditions
+Genesvenn <- list(
+        DENV_NPC = ResultsDENV_NPC %>% filter(padj <= DESeqSigLevel) %>% pull(ENSEMBL),
+        DENV_iEC = ResultsDENV_iEC %>% filter(padj <= DESeqSigLevel) %>% pull(ENSEMBL),
+        ZIKVAS_NPC = ResultsZIKVAS_NPC %>% filter(padj <= DESeqSigLevel) %>% pull(ENSEMBL),
+        ZIKVAS_iEC = ResultsZIKVAS_iEC %>% filter(padj <= DESeqSigLevel) %>% pull(ENSEMBL))
+
+# calculate overlaps and regions
+Venn <- Venn(Genesvenn) %>% process_data()
+
+# plot Venn diagram
+
+ggplot() +
+        geom_sf(aes(fill = log10(count+1)), data = venn_region(Venn), show.legend = TRUE) +
+        geom_sf_text(aes(label = name), fontface = "bold", data = venn_setlabel(Venn)) +
+        geom_sf_label(aes(label=count), fontface = "bold", data = venn_region(Venn), alpha =0.5) +
+        scale_fill_gradient(low= colorWhite, high = colorBlue) +
+        theme_void()
+
+
+# which of the shared genes are ISGs?
+# first extracting genes DE in all conditions, then overlapping with ISGList
+
+DE_DENV_NPC <- Genesvenn$DENV_NPC 
+DE_DENV_iEC <- Genesvenn$DENV_iEC
+DE_ZIKVAS_NPC <- Genesvenn$ZIKVAS_NPC
+DE_ZIKVAS_iEC <- Genesvenn$ZIKVAS_iEC
+
+Overlap_all_datasets <- intersect(DE_DENV_NPC, DE_DENV_iEC) %>% 
+        intersect(., DE_ZIKVAS_NPC) %>% 
+        intersect(., DE_ZIKVAS_iEC) %>%
+        as_tibble() %>%
+        select(Gene = value) %>%
+        mutate(ISG = ifelse(Gene %in% ISGList, "ISG", "other"))
+
+# number of ISGs within the set of genes that is DE in all infections in all cell lines
+sum(Overlap_all_datasets$ISG == "ISG")
+
+```
+
+# Expression of genes of interest
+
+Plotting counts  (with replicates) of interesting genes (e.g. interferon (IFN), or APOL genes)
+
+## INF
+
+```{r, IFN1, fig.height= 3, fig.width= 4.5}
+
+# deregulated ISGs (for main figure)   
+IFNs_main <- c( "IFNB1",  "IFNL1", "IFNL2", "IFNL3")
+# not differentially regulated ISGs (for supplementary figure)    
+INFs_suppl <- c( "IFNA1", "IFNA2", "IFNA4", "IFNA5", "IFNA6", 
+                 "IFNA7", "IFNA8", "IFNA10", "IFNA13", "IFNA14", "IFNA16", "IFNA17", "IFNA21",
+                 "IFNE", "IFNG", "IFNW1", "IFNK")   
+
+# get counts
+countsIFN <- NormalizedCounts %>%
+    filter( Virus != "ZIKVAF",
+            SYMBOL %in% c(IFNs_main, INFs_suppl))
+     
+  
+# plot with IFN in column and cell line in rows
+# 1. for main figure
+ggplot(countsIFN %>% filter(SYMBOL %in% IFNs_main), 
+               aes(Virus, log2(NormCount + pseudocount), colour = Virus)) +
+          geom_jitter(width = 0.15) +
+          facet_grid(rows = vars(CellLine), cols = vars(SYMBOL)) +
+          myTheme +
+          scale_color_manual(values = colorSchemeVirus[c(1,2,4)]) +
+          theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                panel.border = element_rect(color = "black", fill = NA))
+
+```
+
+```{r, IFN2, fig.height= 4, fig.width= 10}
+# 2. for supplementary figure
+ggplot(countsIFN %>% filter(SYMBOL %in% INFs_suppl), 
+               aes(Virus, log2(NormCount + pseudocount), colour = Virus)) +
+          geom_jitter(width = 0.15) +
+          facet_grid(rows = vars(CellLine), cols = vars(SYMBOL)) +
+          ylim(-0.1, 13) +
+          myTheme +
+          scale_color_manual(values = colorSchemeVirus[c(1,2,4)]) +
+          theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                strip.text.x = element_text(size = 8),
+                panel.border = element_rect(color = "black", fill = NA))
+  
+```
+
+## APOL
+
+```{r, APO1, fig.height= 3, fig.width= 4}
+
+# highly expressed APOL genes for main figure    
+APOs_main <- c("APOL1", "APOL2", "APOL6")
+# lowly (APOL3) or not expressed (APOL5) genes for supplementary figure
+APOs_suppl <- c("APOL3", "APOL4", "APOL5")
+    
+
+# get counts    
+countsAPO <- NormalizedCounts %>%
+    filter(Virus != "ZIKVAF",
+           SYMBOL %in% c(APOs_main, APOs_suppl))
+     
+  
+# plot with APOL genes in column and cell line in rows
+# 1. for main figure   
+ggplot(countsAPO %>% filter(SYMBOL %in% APOs_main), 
+               aes(Virus, log2(NormCount + pseudocount), colour = Virus)) +
+          geom_jitter(width = 0.15) +
+          facet_grid(rows = vars(CellLine), cols = vars(SYMBOL)) +
+          ylim(0, 13) +
+          myTheme +
+          scale_color_manual(values = colorSchemeVirus[c(1,2,4)]) +
+          ggtitle("iEC") +
+          theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                panel.border = element_rect(color = "black", fill = NA))
+```
+```{r, APO2, fig.height= 3, fig.width= 4}
+
+# 2. for supplementary figure
+ggplot(countsAPO %>% filter(SYMBOL %in% APOs_suppl), 
+               aes(Virus, log2(NormCount + pseudocount), colour = Virus)) +
+          geom_jitter(width = 0.15) +
+          facet_grid(rows = vars(CellLine), cols = vars(SYMBOL)) +
+          ylim(-0.1, 13) +
+          myTheme +
+          scale_color_manual(values = colorSchemeVirus[c(1,2,4)]) +
+          ggtitle("NPC") +
+          theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                panel.border = element_rect(color = "black", fill = NA))
+          
+```
+
+
